@@ -25,3 +25,7 @@ app.use(morgan('dev'));
 
 // ROUTES
 app.use('/public', require('./controllers/public').public);
+
+//SERVICES
+const particle_service = require('./services/particle');
+particle_service.init();

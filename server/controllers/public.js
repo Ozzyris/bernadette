@@ -1,38 +1,52 @@
 const express = require('express'),
 	  router = express.Router(),
-	  bodyParser = require('body-parser'),
-	  // particle = require('particle-api-js'),
-	  config = require('../config');
+	  bodyParser = require('body-parser');
+
+// HELPERS
+const particle = require('../helpers/particle');
 
 // MIDDLEWARE
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
-	router.get('/test', function (req, res) {
-		var Particle = require('particle-api-js');
-		var particle = new Particle();
+	router.get('/get_last_value', function (req, res) {
+		var device_id;
 
-		var devicesPr = particle.listDevices({ auth: config.particle.token });
+		particle.get_device_details()
+			.then( device_details => {
+				device_id = device_details[0].id;
+				return particle.get_device_attributes( device_id );
+			})
+			.then( device_attributes => {
+				let variable_name;
 
-		devicesPr.then(
-			function(devices){
-				// res.status(200).json( devices );
-			},
-			function(err) {
-				console.log('List devices call failed: ', err);
-			}
-		);
+				for (var key in device_attributes) {
+					if (device_attributes.hasOwnProperty(key)) {
+					    variable_name = key;
+					}
+				}
+				return particle.get_variable_detail( device_id, variable_name );
+			})
+			.then( variable => {
 
-		var devicesPr = particle.getDevice({ deviceId: '3e0036001347343339383037', auth: config.particle.token });
+				res.status(200).json( {
+					'variable': variable.result,
+					'date': variable.coreInfo.last_heard
+				});
+			})
+	});
 
-		devicesPr.then(
-			function(data){
-				res.status(200).json( data );
-			},
-			function(err) {
-				console.log('API call failed: ', err);
-			}
-		);
+	router.get('/get_stream', function (req, res) {
+		var device_id;
+
+		particle.get_device_details()
+			.then( device_details => {
+				device_id = device_details[0].id;
+				return particle.get_device_events( device_id );
+			})
+			.then( device_events => {
+				res.status(200).json({ device_events })
+			})
 
 	});
 
