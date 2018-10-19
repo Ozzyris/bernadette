@@ -43,6 +43,5 @@
 /server/node_modules
 /server/config.js
 
-
 #DATABASE
 /database/*

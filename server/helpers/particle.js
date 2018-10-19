@@ -1,8 +1,11 @@
-const config = require('../config');
+const config = require('../config'),
+	  particle_model = require('../models/particle').particle;
 
 //GLOBALE VARIABLE 
 var Particle = require('particle-api-js');
 var particle = new Particle();
+
+
 
 function get_device_details(){
 	return new Promise((resolve, reject)=>{
@@ -47,6 +50,16 @@ function stream_device_events( device_id ){
 			.then(function(stream) {
 				stream.on('event', function(data) {
 			  		console.log("Event: ", data);
+			  		let particle_details = {
+			  			published_at: data.published_at,
+			  			values: [
+			  				{
+			  					name: data.name,
+								data: data.data,
+			  				}
+			  			]
+			  		};
+			  		return new particle_model( particle_details ).save();
 			  		// particle_service.save_event_information( data );
 				});
 			});
