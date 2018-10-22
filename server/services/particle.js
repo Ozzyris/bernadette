@@ -17,8 +17,6 @@ function save_event_information( event ){
 	console.log(event);
 }
 
-
-
 module.exports={
     'init': init,
     'save_event_information': save_event_information

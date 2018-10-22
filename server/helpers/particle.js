@@ -49,18 +49,28 @@ function stream_device_events( device_id ){
 		particle.getEventStream({ deviceId: device_id, auth: config.particle.token })
 			.then(function(stream) {
 				stream.on('event', function(data) {
-			  		console.log("Event: ", data);
-			  		let particle_details = {
-			  			published_at: data.published_at,
-			  			values: [
-			  				{
-			  					name: data.name,
-								data: data.data,
-			  				}
-			  			]
-			  		};
-			  		return new particle_model( particle_details ).save();
-			  		// particle_service.save_event_information( data );
+
+			  		if( data.name == 'published_data' ){
+			  			let variables = JSON.parse( data.data );
+			  			let particle_details = {
+			  				published_at: data.published_at,
+			  				values: []
+				  		}
+
+						for (var key in variables) {
+						    if (variables.hasOwnProperty( key )) {
+						        let variable = {
+						        	name: key,
+						        	data: variables[key]
+						        }
+
+						        particle_details.values.push( variable );
+						    }
+						}
+
+						console.log( particle_details );
+						return new particle_model( particle_details ).save();
+			  		}
 				});
 			});
 	})
