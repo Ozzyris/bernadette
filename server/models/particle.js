@@ -9,23 +9,23 @@ var particle = new mongoose.Schema({
 
         },
     ],
-    published_at: {type: Date, default: moment()}
+    published_at: {type: Date}
 
 }, {collection: 'particle'});
 
-
-// particle.statics.add_particle_set = function( id ){
-//     return new Promise((resolve, reject) => {
-//         this.findOne({ _id : id }).exec()
-//             .then(players => {
-//                 if( players ){
-//                     resolve( players );
-//                 }else{
-//                     reject({ message: 'An error happend', code: 'error_happend'});
-//                 }
-//             })
-//     })
-// };
+particle.statics.get_last_hour = function(){
+    return new Promise((resolve, reject) => {
+        this.find({ published_at : { $gt: moment().subtract(1, 'h'), $lt: moment()} }).exec()
+            .then(infos => {
+                console.log(infos);
+                if( infos ){
+                    resolve( infos );
+                }else{
+                    reject({ message: 'An error happend', code: 'error_happend'});
+                }
+            })
+    })
+};
 
 var particle = mongoose.DB.model('particle', particle);
 

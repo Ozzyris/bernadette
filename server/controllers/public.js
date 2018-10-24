@@ -3,7 +3,10 @@ const express = require('express'),
 	  bodyParser = require('body-parser');
 
 // HELPERS
-const particle = require('../helpers/particle');
+const particle_helper = require('../helpers/particle');
+
+//MODEL
+const particle = require('../models/particle').particle;
 
 // MIDDLEWARE
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -12,10 +15,10 @@ router.use(bodyParser.json());
 	router.get('/get_last_value', function (req, res) {
 		var device_id;
 
-		particle.get_device_details()
+		particle_helper.get_device_details()
 			.then( device_details => {
 				device_id = device_details[0].id;
-				return particle.get_device_attributes( device_id );
+				return particle_helper.get_device_attributes( device_id );
 			})
 			.then( device_attributes => {
 				let variable_name;
@@ -25,7 +28,7 @@ router.use(bodyParser.json());
 					    variable_name = key;
 					}
 				}
-				return particle.get_variable_detail( device_id, variable_name );
+				return particle_helper.get_variable_detail( device_id, variable_name );
 			})
 			.then( variable => {
 
@@ -36,18 +39,11 @@ router.use(bodyParser.json());
 			})
 	});
 
-	router.get('/get_stream', function (req, res) {
-		var device_id;
-
-		particle.get_device_details()
-			.then( device_details => {
-				device_id = device_details[0].id;
-				return particle.get_device_events( device_id );
+	router.get('/get_last_hour', function (req, res) {
+		particle.get_last_hour()
+			.then( infos => {
+				res.status(200).json( infos );
 			})
-			.then( device_events => {
-				res.status(200).json({ device_events })
-			})
-
 	});
 
 module.exports = {
