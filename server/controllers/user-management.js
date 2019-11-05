@@ -2,7 +2,7 @@ const express = require('express'),
 	  router = express.Router(),
 	  bodyParser = require('body-parser'),
 	  moment = require('moment'),
-	  recipe_model = require('../models/recipe').recipe;
+	  user_model = require('../models/user').user;
 
 // MIDDLEWARE
 router.use( require('../middlewares/auth').check_auth );
@@ -14,5 +14,5 @@ router.use(bodyParser.json());
 	});
 
 module.exports = {
-	"admin" : router
+	"user_management" : router
 };

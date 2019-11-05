@@ -28,7 +28,7 @@ router.use(bodyParser.json());
 			signup_record: {
 				email_validation: {
 					token: token_manager.create_token(),
-					expiration_date: moment().add(1,'day'),
+					expiration_date: moment().add(1,'day').toISOString(),
 				}
 			}
 		},
@@ -91,9 +91,9 @@ router.use(bodyParser.json());
 				session.token = token_manager.create_token();
 
 				if( session.keep_session == true ){
-					session.expiration_date = moment().add(7,'day');
+					session.expiration_date = moment().add(7,'day').toISOString();
 				}else{
-					session.expiration_date = moment().add(1,'day');
+					session.expiration_date = moment().add(1,'day').toISOString();
 				}
 
 				return user_model.save_session_detail_from_id( session, user_id );

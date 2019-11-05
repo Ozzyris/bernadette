@@ -8,10 +8,12 @@ var token_manager = require('../helpers/token_manager');
 function check_auth(req, res, next) {
 	let xtoken = req.headers['x-auth-token'],
 		session;
+
 	if(!xtoken){
 		res.status(401).send([{message: "Your authentification token is invalid", code: 'auth_invalid'}])
 		return;
 	}
+
 
 	user_model.get_auth_detail_from_xtoken( xtoken )
 		.then(token_details => {
@@ -20,9 +22,9 @@ function check_auth(req, res, next) {
 		})
 		.then(is_token_valid => {
 			if(session.keep_session){
-				session.expiration_date = moment().add(7,'day');
+				session.expiration_date = moment().add(7,'day').toISOString();
 			}else{
-				session.expiration_date = moment().add(1,'day');
+				session.expiration_date = moment().add(1,'day').toISOString();
 			}
 			return user_model.update_token_timestamp_from_xtoken( xtoken, session );
 		})

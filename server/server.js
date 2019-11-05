@@ -25,3 +25,4 @@ app.use(morgan('dev'));
 
 // ROUTES
 app.use('/auth', require('./controllers/auth').auth);
+app.use('/user-management', require('./controllers/user-management').user_management);
