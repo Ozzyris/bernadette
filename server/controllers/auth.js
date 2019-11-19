@@ -50,7 +50,6 @@ router.use(bodyParser.json());
 				return mailgun.send_email('verification_email', email_data);
 			})
 			.then( is_email_sent => {
-				console.log( is_email_sent );
 				res.status(200).json({message: 'New user added to the database', code: 'user_created'});
 			})
 			.catch( error => {

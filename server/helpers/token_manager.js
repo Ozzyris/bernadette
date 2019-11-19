@@ -1,5 +1,4 @@
 var uuid = require('uuid/v4'),
-	Promise = require('bluebird'),
 	moment = require('moment');
 
 function create_token(){
@@ -8,7 +7,6 @@ function create_token(){
 
 function check_if_token_is_valid( token_details ){
 	return new Promise((resolve, reject)=>{
-		console.log( moment(token_details.expiration_date).isAfter() );
 		if( moment(token_details.expiration_date).isAfter() ){
 			resolve( true );
 		}else{
